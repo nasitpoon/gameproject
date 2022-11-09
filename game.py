@@ -1,9 +1,16 @@
 import pygame
 import random
 import numpy as np
+from button import Button
+import time
 
-# SCREEN = pygame.display.set_mode((1280, 720))
-# pygame.display.set_caption("The special 2048")
+SCREEN = pygame.display.set_mode((1280, 720))
+pygame.display.set_caption("The special 2048")
+
+
+#gameover font
+def get_gamefont(size):
+    return pygame.font.Font("font.ttf", size)
 
 BG_COLORS = {
     0: (250, 250, 250),
@@ -90,6 +97,10 @@ class Game2048:
         result = [x for x in result if x != 0]
         return result
 
+    # def item1(self):
+
+
+
     def move(self, dir):
         for idx in range(self.N):
 
@@ -124,8 +135,10 @@ class Game2048:
                 return False
         return True
 
+
     def play(self):
         running = True
+        end = False
         while running:
             self.drawBoard()
             pygame.display.update()
@@ -136,23 +149,35 @@ class Game2048:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_w:
                         self.move("U")
-                    elif event.key == pygame.K_DOWN:
+                    elif event.key == pygame.K_s:
                         self.move("D")
-                    elif event.key == pygame.K_LEFT:
+                    elif event.key == pygame.K_a:
                         self.move("L")
-                    elif event.key == pygame.K_RIGHT:
+                    elif event.key == pygame.K_d:
                         self.move("R")
                     elif event.key == pygame.K_ESCAPE:
                         running = False
+                        end = True
 
-                    if self.isGameOver():
-                        print("Game Over !!")
-                        return
+                    if self.isGameOver() or end:
+
+                            SCREEN.fill("white")
+
+                            GAMEOVER_text = get_gamefont(35).render("Game Over !!!", True,"Black")
+                            GAMEOVER_rect = GAMEOVER_text.get_rect(center=(640,260))
+                            SCREEN.blit(GAMEOVER_text,GAMEOVER_rect)
+
+                            pygame.display.update()
+                            time.sleep(3)
+                            # print("Game Over !!")
+                            # return
 
                     if (self.boardStatus == oldBoardStatus).all() == False:
                         self.addNewNumber()
+                    
+                    
 
 if __name__ == "__main__":
     game = Game2048()
